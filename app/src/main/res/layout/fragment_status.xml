@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.view.fragments.StatusFragment">
+
+    <TextView
+        android:id="@+id/txt_nome"
+        android:layout_width="255dp"
+        android:layout_height="25dip"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:text="Nome do Tecnico"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_email"
+        android:layout_width="255dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
+        android:text="Email do tecnico"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="Seus serviços"
+        />
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="135dp"
+        android:text="Manutenções feitas"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        />
+
+
+    <ProgressBar
+        android:id="@+id/progressBarManutencao"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="-20dp"
+        android:max="50" />
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="180dp"
+        android:text="Instalações feitas"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBarInstalacao"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="195dp"
+        android:max="50" />
+
+    <TextView
+        android:id="@+id/totalM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="135dp"
+        android:text="100"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/totalI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="180dp"
+        android:text="100"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginRight="40dp"
+
+        android:background="?android:attr/listDivider" />
+</FrameLayout>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp">
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="140dp"
+            android:layout_marginLeft="140dp"
+            android:text="Agend:"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textAdapterTipoChamado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Tipo Chamado"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textAdapterNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Nome"
+            android:textColor="#696969"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAdapterTipoChamado" />
+
+        <TextView
+            android:id="@+id/textAdapterEndereco"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Endereco Cliente"
+            android:textColor="#696969"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAdapterNome" />
+
+        <TextView
+            android:id="@+id/textAdapterData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:text="2018-09-22"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="Às:"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/textAdapterData"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textAdapterHora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:text="02:99"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toEndOf="@+id/textView20"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="203dp"
+            android:layout_marginLeft="203dp"
+            android:text="Status:"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAdapterData" />
+
+        <TextView
+            android:id="@+id/textAdapterStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:text="Andamento"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

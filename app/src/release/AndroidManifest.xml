@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tcc.etec.needful">
+
+    <application>
+        <activity android:name="tcc.etec.needful.LoginActivity"></activity>
+    </application>
+</manifest>

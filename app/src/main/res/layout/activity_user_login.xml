@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/userLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.view.view.UserLoginActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="Email:"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/editTextEmail"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:text="Senha:"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/editTextSenha"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
+
+    <EditText
+        android:id="@+id/editTextSenha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="39dp"
+        android:layout_marginLeft="39dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginRight="39dp"
+        android:drawableLeft="@drawable/ic_lock_cinza"
+        android:ems="10"
+        android:hint="INFORME SUA SENHA"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+    <Button
+        android:id="@+id/btnEntrar"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+        android:layout_width="129dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="215dp"
+        android:layout_marginLeft="215dp"
+        android:layout_marginTop="20dp"
+        android:text="Entrar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSenha" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="39dp"
+        android:layout_marginLeft="39dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginRight="39dp"
+        android:drawableLeft="@drawable/ic_email_cinza"
+        android:ems="10"
+        android:hint="INFORME SEU EMAIL"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="59dp"
+        android:layout_marginBottom="57dp"
+        android:text="NeedFul"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_chamados"
+            android:icon="@drawable/ic_chamados_24dp"
+            android:title="Chamados" />
+        <item
+            android:id="@+id/nav_agendados"
+            android:icon="@drawable/ic_agendados_24dp"
+            android:title="Agendados" />
+        <item
+            android:id="@+id/nav_bloqueado_cancelado"
+            android:icon="@drawable/nav_lock_24dp"
+            android:title="Bloqueados e Cancelados" />
+        <item
+            android:id="@+id/nav_finalizados"
+            android:icon="@drawable/nav_finalizados"
+            android:title="Finalizados" />
+
+    </group>
+
+    <item android:title="Configurações">
+        <menu>
+            <item
+                android:id="@+id/nav_status"
+                android:icon="@drawable/ic_status_24dp"
+                android:title="Status" />
+        </menu>
+    </item>
+
+</menu>
