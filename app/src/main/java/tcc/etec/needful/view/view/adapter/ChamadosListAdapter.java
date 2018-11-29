@@ -15,19 +15,23 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import tcc.etec.needful.R;
+import tcc.etec.needful.view.view.api.WebService;
 import tcc.etec.needful.view.view.api.WebServiceChamado;
 import tcc.etec.needful.view.view.controller.ChamadosController;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.util.AlterarAsynTask;
+import tcc.etec.needful.view.view.util.UtilChamados;
 
 public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements View.OnClickListener {
 
@@ -37,8 +41,10 @@ public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vie
     ChamadosController controller;
     ArrayList<ChamadosVO> lista;
     ArrayList<ChamadosVO> dados;
-    static SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
-    static SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    UtilChamados util = new UtilChamados();
+    WebServiceChamado web;
 
     private static class ViewHolder {
         TextView txt_Tipo_Chamado;
@@ -64,7 +70,6 @@ public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vie
         Object object = getItem(posicao);
         final ChamadosVO chamadosVO = (ChamadosVO) object;
 
-        final int tested = posicao;
         switch (view.getId()) {
 
             case R.id.img_logo:
@@ -93,12 +98,23 @@ public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vie
                     build.setPositiveButton("SIM", new Dialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                Date teste = new Date();
+                                lista = new ArrayList<>();
+                                web = new WebServiceChamado();
+                                chamadosVO.setIdStatusChamado(4);
+                                chamadosVO.setFinalizacao_Data(new Date());
+                                controller = new ChamadosController(getContext());
+                                controller.alterar(chamadosVO);
+                                web.fecharChamado(chamadosVO);
 
-                            lista = new ArrayList<>();
-                            chamadosVO.setIdStatusChamado(4);
-                            chamadosVO.setFinalizacao_Data(new Date());
-                            controller = new ChamadosController(getContext());
-                            controller.alterar(chamadosVO);
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
                             lista = controller.todosChamados(chamadosVO.getIdTecnico());
                             atualizarLista(lista);
@@ -154,17 +170,16 @@ public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vie
             linha = (ViewHolder) dataSet.getTag();
         }
 
-        String auxDateAgend = sdfData.format(chamadosVO.getAgendamento_Data());
-        String auxHoraAgend = sdfHora.format(chamadosVO.getAgendamento_horas());
+        String dataAgend = formatDate.format(chamadosVO.getAgendamento_Data());
+        String horaAgend = sdfHora.format(chamadosVO.getAgendamento_horas());
 
-        linha.txt_Tipo_Chamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
+        linha.txt_Tipo_Chamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
         linha.txt_Nome_Cliente.setText(chamadosVO.getClientVO().getNome());
         linha.txt_Endereco_cliente.setText(chamadosVO.getClientVO().getEnderecoVO().getRua());
-        linha.data_agendado.setText(String.valueOf(auxDateAgend));
-        linha.hora_agendado.setText(String.valueOf(auxHoraAgend));
-        Date dataHoje = new Date();
+        linha.data_agendado.setText(String.valueOf(dataAgend));
+        linha.hora_agendado.setText(String.valueOf(horaAgend));
 
-        if (chamadosVO.getAgendamento_Data().before(dataHoje) || chamadosVO.getIdStatusChamado() == 1) {
+        if (chamadosVO.getAgendamento_Data().before(new Date())) {
             linha.status.setText("Atrasado");
             linha.status.setTextColor(Color.parseColor("#FFFF0000"));
             linha.img_finalizar.setVisibility(View.INVISIBLE);
@@ -193,16 +208,5 @@ public class ChamadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vie
         this.dados.addAll(novosDados);
         notifyDataSetChanged();
     }
-
-    private String tipoChamado(int tipoChamado) {
-
-        if (tipoChamado == 1) {
-            return "Instalação";
-        } else if (tipoChamado == 2) {
-            return "Manutenção";
-        }
-        return null;
-    }
-
 
 }

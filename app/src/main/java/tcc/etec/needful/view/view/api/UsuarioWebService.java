@@ -1,5 +1,8 @@
 package tcc.etec.needful.view.view.api;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -11,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import tcc.etec.needful.view.view.model.UsuarioModel;
+import tcc.etec.needful.view.view.model.UsuarioVO;
 
 public class UsuarioWebService {
 
     private Gson gson = new Gson();
-    private Type usuarioType = new TypeToken<UsuarioModel>() {
+    private Type usuarioType = new TypeToken<UsuarioVO>() {
     }.getType();
-    private Type listUsuarioType = new TypeToken<List<UsuarioModel>>() {
+    private Type listUsuarioType = new TypeToken<List<UsuarioVO>>() {
     }.getType();
 
     private String checkLogin = "http://" + Constantes.getIpWebservice()
@@ -56,32 +59,24 @@ public class UsuarioWebService {
     private String permissaoAlterar = "http://" + Constantes.getIpWebservice()
             + ":8080/WSNeedful/webresources/usuarios/permissaoAlterar/";
 
-    public List<UsuarioModel> readJtablea() throws JsonSyntaxException, SocketException, IOException, ExecutionException, InterruptedException {
-        List<UsuarioModel> retorno = new ArrayList<>();
+    public List<UsuarioVO> readJtablea() throws JsonSyntaxException, SocketException, IOException, ExecutionException, InterruptedException {
+        List<UsuarioVO> retorno = new ArrayList<>();
         String retornoJson = new WebService(readJtablea, Constantes.getGET()).execute().get();
         retorno = gson.fromJson(retornoJson, listUsuarioType);
         return retorno;
     }
 
-    /*public List<UsuarioModel> readJtableAD() throws JsonSyntaxException, SocketException, IOException {
-        List<UsuarioModel> retorno = new ArrayList<>();
-        retorno = gson.fromJson(httpClient.sendGET(readJtableAD, Constantes.getGet()), listUsuarioType);
-
-        return retorno;
-    }
-
-    public UsuarioModel buscarEmailORLogin(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        UsuarioModel retorno = null;
-
+   /* public UsuarioVO buscarEmailORLogin(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
+        UsuarioVO retorno = null;
         String retornojson = httpClient.sendPOST(buscarEmailLogin, json, Constantes.getPost());
         retorno = gson.fromJson(retornojson, usuarioType);
 
         return retorno;
     }
 
-    public boolean existeEmailLogin(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
+    public boolean existeEmailLogin(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         System.out.println(json);
         boolean retorno = false;
 
@@ -91,35 +86,11 @@ public class UsuarioWebService {
         return retorno;
     }
 
-    public boolean alterarSenha(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        boolean retorno = false;
-        String json = gson.toJson(UsuarioModel);
+    public UsuarioVO permissaoDeLogin(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         System.out.println(json);
 
-        String retornojson = httpClient.sendPUT(alterarSenha, json, Constantes.getPut());
-        retorno = Boolean.parseBoolean(retornojson);
-
-        return retorno;
-
-    }
-
-    public boolean alteraConta(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        boolean retorno = false;
-        String json = gson.toJson(UsuarioModel);
-        System.out.println(json);
-
-        String retornojson = httpClient.sendPUT(alteraConta, json, Constantes.getPut());
-        retorno = Boolean.parseBoolean(retornojson);
-
-        return retorno;
-
-    }
-
-    public UsuarioModel permissaoDeLogin(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        System.out.println(json);
-
-        UsuarioModel retorno = new UsuarioModel();
+        UsuarioVO retorno = new UsuarioVO();
 
         retorno = gson.fromJson(httpClient.sendPOST(permissaoDeLogin, json, Constantes.getPost()), usuarioType);
 
@@ -127,54 +98,30 @@ public class UsuarioWebService {
 
     }
 
-    public boolean permissaoDaAreaRestrita(UsuarioModel UsuarioModel)
-            throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        boolean retorno = false;
-        System.out.println(json);
-
-        retorno = Boolean.parseBoolean(httpClient.sendPOST(permissaoDaAreaRestrita, json, Constantes.getPost()));
-
-        return retorno;
-    }
-
-    public boolean criarUsuario(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        boolean retorno = false;
-
-        retorno = Boolean.parseBoolean(httpClient.sendPOST(criarusuario, json, Constantes.getPost()));
-
-        return retorno;
-    }
-
-    public List<UsuarioModel> pesquisaTipoDeUsuario() throws JsonSyntaxException, SocketException, IOException {
-        List<UsuarioModel> retorno = new ArrayList<>();
+    public List<UsuarioVO> pesquisaTipoDeUsuario() throws JsonSyntaxException, SocketException, IOException {
+        List<UsuarioVO> retorno = new ArrayList<>();
 
         retorno = gson.fromJson(httpClient.sendGET(pesquisaTipoUsuario, Constantes.getGet()), listUsuarioType);
 
         return retorno;
     }
 
-    public UsuarioModel pesquisaUsuario(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        UsuarioModel retorno = new UsuarioModel();
-        String json = gson.toJson(UsuarioModel);
+    public UsuarioVO pesquisaUsuario(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        UsuarioVO retorno = new UsuarioVO();
+        String json = gson.toJson(UsuarioVO);
         System.out.println(json);
         retorno = gson.fromJson(httpClient.sendPOST(pesquisaUsuario, json, Constantes.getGet()), usuarioType);
 
         return retorno;
+    }*/
+
+    public boolean checkLogin(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException, ExecutionException, InterruptedException {
+        String json = gson.toJson(UsuarioVO);
+        return Boolean.parseBoolean(new WebService(checkLogin, json, Constantes.getPOST()).execute().get());
     }
 
-    public boolean checkLogin(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        boolean retorno = false;
-
-        retorno = Boolean.parseBoolean(httpClient.sendPOST(checkLogin, json, Constantes.getPost()));
-
-        return retorno;
-    }
-
-    public boolean existerContaAD(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
+   /* public boolean existerContaAD(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         boolean retorno = false;
         System.out.println(json);
         retorno = Boolean.parseBoolean(httpClient.sendPOST(existerContaAD, json, Constantes.getPost()));
@@ -182,8 +129,8 @@ public class UsuarioWebService {
         return retorno;
     }
 
-    public boolean existerContaa(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
+    public boolean existerContaa(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         boolean retorno = false;
 
         retorno = Boolean.parseBoolean(httpClient.sendPOST(existerContaa, json, Constantes.getPost()));
@@ -191,8 +138,8 @@ public class UsuarioWebService {
         return retorno;
     }
 
-    public boolean statusConta(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
+    public boolean statusConta(UsuarioVO UsuarioVO) throws JsonSyntaxException, SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         boolean retorno = false;
         System.out.println(json);
         retorno = Boolean.parseBoolean(httpClient.sendPUT(statusConta, json, Constantes.getPut()));
@@ -200,14 +147,8 @@ public class UsuarioWebService {
         return retorno;
     }
 
-    public boolean permissaoAlterar(UsuarioModel UsuarioModel) throws JsonSyntaxException, SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
-        System.out.println(json);
-        return Boolean.parseBoolean(httpClient.sendPOST(permissaoAlterar, json, Constantes.getPost()));
-    }
-
-    public boolean acessoAD(UsuarioModel UsuarioModel) throws SocketException, IOException {
-        String json = gson.toJson(UsuarioModel);
+    public boolean acessoAD(UsuarioVO UsuarioVO) throws SocketException, IOException {
+        String json = gson.toJson(UsuarioVO);
         return Boolean.parseBoolean(httpClient.sendPOST(usuarioAD, json, Constantes.getPost()));
     }*/
 

@@ -3,10 +3,8 @@ package tcc.etec.needful.view.view.controller;
 import android.content.ContentValues;
 import android.content.Context;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import tcc.etec.needful.view.view.datamodel.ChamadosDataModel;
 import tcc.etec.needful.view.view.datamodel.ClienteDataModel;
@@ -16,9 +14,7 @@ import tcc.etec.needful.view.view.datamodel.TecnicoDataModel;
 import tcc.etec.needful.view.view.datamodel.UsuarioDataModel;
 import tcc.etec.needful.view.view.datasource.DataSource;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.model.ClienteVO;
-import tcc.etec.needful.view.view.model.EnderecoVO;
-import tcc.etec.needful.view.view.model.UsuarioModel;
+import tcc.etec.needful.view.view.model.UsuarioVO;
 
 public class ChamadosController extends DataSource {
 
@@ -31,9 +27,8 @@ public class ChamadosController extends DataSource {
     ContentValues dadosEndereco;
     ContentValues dadosStatus;
     ContentValues dadosTecnico;
-    static SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
 
-    public boolean salvarUser(UsuarioModel user) {
+    public boolean salvarUser(UsuarioVO user) {
 
         dados = new ContentValues();
         dados.put(UsuarioDataModel.getId(), user.getId());
@@ -45,7 +40,6 @@ public class ChamadosController extends DataSource {
         dados.put(UsuarioDataModel.getTipo_usuario(), user.getIdTipoUsuario());
         dados.put(UsuarioDataModel.getStatusAD(), user.getStatusAD());
         return insert(UsuarioDataModel.getTABELA(), dados);
-
     }
 
     public ArrayList<ChamadosVO> todosChamados(int idTecnico) {
@@ -72,7 +66,7 @@ public class ChamadosController extends DataSource {
 
     }
 
-    public UsuarioModel buscarUser(String login) {
+    public UsuarioVO buscarUser(String login) {
 
         return buscarUsuario(login);
     }
@@ -112,7 +106,7 @@ public class ChamadosController extends DataSource {
         dados.put(ChamadosDataModel.getId(), chamados.getID());
         dados.put(ChamadosDataModel.getDataChamado(), String.valueOf(chamados.getData()));
         dados.put(ChamadosDataModel.getHoraChamado(), String.valueOf(chamados.getHoras()));
-        dados.put(ChamadosDataModel.getDataChamado(), String.valueOf(chamados.getData()));
+        dados.put(ChamadosDataModel.getAgendamentoDataChamado(), String.valueOf(chamados.getAgendamento_Data()));
         dados.put(ChamadosDataModel.getAgendamentoHoraChamado(), String.valueOf(chamados.getAgendamento_horas()));
         dados.put(ChamadosDataModel.getObservacaoChamado(), chamados.getDescricao());
         dados.put(ChamadosDataModel.getIdTipoChamado(), chamados.getTipoChamado());

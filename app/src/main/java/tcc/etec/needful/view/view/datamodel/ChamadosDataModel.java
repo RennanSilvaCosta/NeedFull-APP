@@ -40,7 +40,10 @@ public class ChamadosDataModel {
        setComandoSQL(getComandoSQL() + confirmacaoHora_chamado + " TIME, ");
        setComandoSQL(getComandoSQL() + finalizacaoData_chamado + " DATE, ");
        setComandoSQL(getComandoSQL() + finalizacaoHora_chamado + " TIME, ");
-       setComandoSQL(getComandoSQL() + justificativa + " TEXT");
+       setComandoSQL(getComandoSQL() + justificativa + " TEXT, ");
+       setComandoSQL(getComandoSQL() + " FOREIGN KEY (id_cliente) REFERENCES cliente (id_cliente), ");
+       setComandoSQL(getComandoSQL() + " FOREIGN KEY (id_tecnico) REFERENCES tecnico (id_tecnico), ");
+       setComandoSQL(getComandoSQL() + " FOREIGN KEY (id_status_chamado) REFERENCES status (id_status)");
        setComandoSQL(getComandoSQL() + " );");
 
         return getComandoSQL();

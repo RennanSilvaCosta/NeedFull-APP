@@ -32,7 +32,8 @@ public class ClienteDataModel {
         setComandoSQL(getComandoSQL() + celularCliente + " TEXT, ");
         setComandoSQL(getComandoSQL() + equipamentoCliente + " TEXT, ");
         setComandoSQL(getComandoSQL() + caboCliente + " TEXT, ");
-        setComandoSQL(getComandoSQL() + idEndereco + " INTEGER");
+        setComandoSQL(getComandoSQL() + idEndereco + " INTEGER,");
+        setComandoSQL(getComandoSQL() + " FOREIGN KEY (id_endereco) REFERENCES endereco (id_endereco)");
         setComandoSQL(getComandoSQL() + ")");
 
         return getComandoSQL();

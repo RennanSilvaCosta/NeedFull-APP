@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.adapter.AgendadosListAdapter;
@@ -119,6 +120,7 @@ public class AgendadosFragment extends Fragment {
 
                         ChamadosVO chamadosVO = dataSet.get(posicao);
                         int idChamado = chamadosVO.getID();
+                        chamadosVO.setFinalizacao_Data(new Date());
                         Intent intent = new Intent(getActivity(), JustificarActivity.class);
                         intent.putExtra("tipo_status", "Bloqueio");
                         intent.putExtra("id_chamado", idChamado);
@@ -153,6 +155,7 @@ public class AgendadosFragment extends Fragment {
 
                         ChamadosVO chamadosVO = dataSet.get(posicao2);
                         int idChamado = chamadosVO.getID();
+                        chamadosVO.setFinalizacao_Data(new Date());
                         Intent intent = new Intent(getActivity(), JustificarActivity.class);
                         intent.putExtra("tipo_status", "Cancelamento");
                         intent.putExtra("id_chamado", idChamado);

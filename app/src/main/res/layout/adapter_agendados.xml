@@ -17,8 +17,8 @@
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="140dp"
-            android:layout_marginLeft="140dp"
+            android:layout_marginStart="130dp"
+            android:layout_marginLeft="130dp"
             android:text="Agend:"
             android:textColor="@android:color/black"
             android:textSize="16sp"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/textAdapterNome"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:text="Nome"
@@ -84,7 +84,7 @@
 
         <TextView
             android:id="@+id/textAdapterHora"
-            android:layout_width="wrap_content"
+            android:layout_width="57dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
@@ -98,8 +98,8 @@
             android:id="@+id/textView22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="203dp"
-            android:layout_marginLeft="203dp"
+            android:layout_marginStart="200dp"
+            android:layout_marginLeft="200dp"
             android:text="Status:"
             android:textColor="@android:color/black"
             android:textSize="16sp"

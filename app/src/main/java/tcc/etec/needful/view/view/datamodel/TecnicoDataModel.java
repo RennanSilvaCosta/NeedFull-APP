@@ -10,7 +10,6 @@ public class TecnicoDataModel {
 
     private static String comandoSQL = "";
 
-
     public static String criarTabela(){
 
         setComandoSQL("CREATE TABLE " + getTabela());
@@ -21,7 +20,6 @@ public class TecnicoDataModel {
         setComandoSQL(getComandoSQL() + " )");
 
         return getComandoSQL();
-
     }
 
     public static String getTabela() {

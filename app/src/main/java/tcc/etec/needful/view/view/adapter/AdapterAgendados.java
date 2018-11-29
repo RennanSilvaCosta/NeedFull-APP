@@ -7,23 +7,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.recyclerview.widget.RecyclerView;
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.datamodel.ChamadosDataModel;
 import tcc.etec.needful.view.view.model.ChamadosVO;
+import tcc.etec.needful.view.view.util.UtilChamados;
 
 
 public class AdapterAgendados extends RecyclerView.Adapter<AdapterAgendados.MyViewHolder> {
 
     List<ChamadosVO> chamados;
     Context context;
-    static SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
-    static SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    UtilChamados util = new UtilChamados();
 
     public AdapterAgendados(List<ChamadosVO> chamados, Context context) {
         this.chamados = chamados;
@@ -40,15 +44,15 @@ public class AdapterAgendados extends RecyclerView.Adapter<AdapterAgendados.MyVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ChamadosVO chamadosVO = chamados.get(position);
 
-        String auxDateAgend = sdfData.format(chamadosVO.getAgendamento_Data());
-        String auxHoraAgend = sdfHora.format(chamadosVO.getAgendamento_horas());
+        String dataAgend = formatDate.format(chamadosVO.getAgendamento_Data());
+        String horaAgend = sdfHora.format(chamadosVO.getAgendamento_horas());
 
-        holder.tipoChamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
-        holder.data.setText(String.valueOf(auxDateAgend));
-        holder.hora.setText(String.valueOf(auxHoraAgend));
+        holder.tipoChamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
+        holder.data.setText(String.valueOf(dataAgend));
+        holder.hora.setText(String.valueOf(horaAgend));
         holder.nome.setText(chamadosVO.getClientVO().getNome());
         holder.endereco.setText(chamadosVO.getClientVO().getEnderecoVO().getBairro() + ", " + chamadosVO.getClientVO().getEnderecoVO().getNumero());
-        holder.status.setText(statusChamado(chamadosVO.getIdStatusChamado()));
+        holder.status.setText(util.statusChamado(chamadosVO.getIdStatusChamado()));
 
         if (chamadosVO.getIdStatusChamado() == 2) {
             holder.status.setTextColor(Color.parseColor("#FBC433"));
@@ -79,25 +83,6 @@ public class AdapterAgendados extends RecyclerView.Adapter<AdapterAgendados.MyVi
             nome = itemView.findViewById(R.id.textAdapterNome);
             status = itemView.findViewById(R.id.textAdapterStatus);
         }
-    }
-
-    private String tipoChamado(int tipoChamado) {
-
-        if (tipoChamado == 1) {
-            return "Instalação";
-        } else if (tipoChamado == 2) {
-            return "Manutenção";
-        }
-        return null;
-    }
-
-    private String statusChamado(int status) {
-        if (status == 1) {
-            return "Aberto";
-        } else if (status == 2) {
-            return "Andamento";
-        }
-        return null;
     }
 
 }

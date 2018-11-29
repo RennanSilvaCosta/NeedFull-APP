@@ -14,6 +14,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class BloqueadoOuCanceladoActivity extends AppCompatActivity {
 
     private TextView textViewData, textViewHora, nomeCliente, observacoes, equipamento, referenciaCliente, cepCliente, complementoCliente,
@@ -25,6 +29,8 @@ public class BloqueadoOuCanceladoActivity extends AppCompatActivity {
     Context context;
     ChamadosVO chamado;
     private String titulo;
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +72,22 @@ public class BloqueadoOuCanceladoActivity extends AppCompatActivity {
 
     private void popularComponentes() {
 
+        String dataFina = formatDate.format(chamado.getFinalizacao_Data());
+        String horaFina = formatDate.format(chamado.getFinalizacao_horas());
+
         nomeCliente.setText(chamado.getClientVO().getNome());
         observacoes.setText(chamado.getDescricao());
         equipamento.setText(chamado.getClientVO().getRoteador());
         cepCliente.setText(chamado.getClientVO().getEnderecoVO().getCep());
+        bairroCliente.setText(chamado.getClientVO().getEnderecoVO().getBairro());
         enderecoCliente.setText(chamado.getClientVO().getEnderecoVO().getRua() + " " +
                 chamado.getClientVO().getEnderecoVO().getBairro() + ", " + chamado.getClientVO().getEnderecoVO().getNumero());
         complementoCliente.setText(chamado.getClientVO().getEnderecoVO().getComplemento());
         referenciaCliente.setText(chamado.getClientVO().getEnderecoVO().getReferencia());
         telefoneCliente.setText(chamado.getClientVO().getTelefone());
         celularCliente.setText(chamado.getClientVO().getCelular());
-        dataBloque.setText(String.valueOf(chamado.getConfirmacao_Data())); //POR ENQUANTO ESTOU USANDO A DATA DE CONFIRMAÇÃO
-        horaBloque.setText(String.valueOf(chamado.getConfirmacao_Horas())); //POR ENQUANTO ESTOU USANDO A HORA DE CONFIRMAÇÃO
+        dataBloque.setText(String.valueOf(dataFina));
+        horaBloque.setText(String.valueOf(horaFina));
         justifcativa.setText(chamado.getJustificativa());
 
     }

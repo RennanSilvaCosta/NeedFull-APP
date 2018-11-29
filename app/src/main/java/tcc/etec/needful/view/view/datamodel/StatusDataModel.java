@@ -7,9 +7,7 @@ public class StatusDataModel {
     private final static String idStatus = "id_status";
     private final static String status = "status";
     private final static String idTipoStatus = "id_tipo_status";
-
     private static String comandoSQL = "";
-
 
     public static String criarTabela(){
 
@@ -22,8 +20,6 @@ public class StatusDataModel {
 
         return getComandoSQL();
     }
-
-
 
     public static String getTabela() {
         return tabela;

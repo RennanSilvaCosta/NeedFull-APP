@@ -33,6 +33,7 @@ import tcc.etec.needful.view.view.adapter.AdapterAgendados;
 import tcc.etec.needful.view.view.adapter.RecyclerItemClickListener;
 import tcc.etec.needful.view.view.controller.ChamadosController;
 import tcc.etec.needful.view.view.model.ChamadosVO;
+import tcc.etec.needful.view.view.util.UtilChamados;
 import tcc.etec.needful.view.view.view.JustificarActivity;
 import tcc.etec.needful.view.view.view.DetalheChamadoActivity;
 
@@ -44,17 +45,14 @@ public class ModeloFragment extends Fragment {
     ImageView imgFundo;
     private AdapterAgendados adapterAgendados;
     private RecyclerView recyclerView;
-    private List<ChamadosVO> listaChamados = new ArrayList<>();
+    private List<ChamadosVO> listaChamados;
     private ChamadosVO chamado;
+    private UtilChamados util;
     private int idTecnico;
-    private int teste;
+    private int posicao;
     CompactCalendarView compactCalendarView;
     private long epoch;
-    private String mes = "";
-    private String dia = "";
-    private String ano = "";
-    private String dataCompleta = "";
-    private String gg = "";
+    private String mes = "", dia = "", ano = "", dataCompleta = "";
 
     public ModeloFragment() {
 
@@ -74,6 +72,8 @@ public class ModeloFragment extends Fragment {
         Bundle id = getArguments();
         this.idTecnico = id.getInt("id_tecnico");
 
+        listaChamados = new ArrayList<>();
+        util = new UtilChamados();
         context = getContext();
         recyclerView = view.findViewById(R.id.recyclerAgendados);
         compactCalendarView = view.findViewById(R.id.compactcalendar_view);
@@ -85,56 +85,9 @@ public class ModeloFragment extends Fragment {
 
         Date data = new Date();
         adiconarEventosHoje(data);
+        adicionarEventos(data);
         swipe();
 
-       /* try {
-            List<String> listaDatas;
-            ChamadosController controller = new ChamadosController(context);
-            listaDatas = controller.buscarDatas(idTecnico);
-            String teste = "";
-
-            for (String teste1 : listaDatas) {
-                teste = teste1;
-
-                for (int i = 0; i < 4; i++) {
-                    char c = teste.charAt(i);
-                    ano = ano + String.valueOf(c);
-                }
-                for (int i = 5; i <= 6; i++) {
-                    char c = teste.charAt(i);
-                    mes = mes + String.valueOf(c);
-                }
-                for (int i = 8; i < 10; i++) {
-                    char c = teste.charAt(i);
-                    dia = dia + String.valueOf(c);
-                }
-
-                dataCompleta = mes + "/" + dia + "/" + ano;
-                SimpleDateFormat formato = new SimpleDateFormat("MM/dd/yyyy");
-                Date data2 = formato.parse(dataCompleta);
-
-                if (data2.before(data)) {
-
-                    this.epoch = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dataCompleta + " 14:30:00").getTime();
-                    Event ev = new Event(Color.RED, epoch);
-                    compactCalendarView.addEvent(ev);
-                    ev = null;
-                    this.epoch = 0;
-                    zerarData();
-
-                } else if (data2.after(data)) {
-
-                    this.epoch = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dataCompleta + " 14:30:00").getTime();
-                    Event ev = new Event(Color.BLUE, epoch);
-                    compactCalendarView.addEvent(ev);
-                    ev = null;
-                    this.epoch = 0;
-                    zerarData();
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -145,19 +98,13 @@ public class ModeloFragment extends Fragment {
                     char c = dataSelecionada.charAt(i);
                     mes = mes + String.valueOf(c);
                 }
-                for (int i = 8; i < 10; i++) {
-                    char c = dataSelecionada.charAt(i);
-                    dia = dia + String.valueOf(c);
-                }
                 for (int i = 29; i <= 33; i++) {
                     char c = dataSelecionada.charAt(i);
                     ano = ano + String.valueOf(c);
                 }
 
-                dataCompleta = ano.trim() + "-" + mesNumerico(mes) + dia;
-
                 ChamadosController controller = new ChamadosController(context);
-                listaChamados = controller.buscarAgendadoPorData(dataCompleta, idTecnico);
+                listaChamados = controller.buscarAgendadoPorData(dataSelecionada, idTecnico);
                 if (listaChamados.size() == 0) {
                     txtFundo.setVisibility(View.VISIBLE);
                     imgFundo.setVisibility(View.VISIBLE);
@@ -171,8 +118,8 @@ public class ModeloFragment extends Fragment {
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapterAgendados);
 
-                String viewMes = mesPt(mes);
-                txtMes.setText(viewMes+" -"+ano);
+                String viewMes = util.mesPt(mes);
+                txtMes.setText(viewMes + " -" + ano);
             }
 
             @Override
@@ -190,6 +137,7 @@ public class ModeloFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DetalheChamadoActivity.class);
                 intent.putExtra("id_chamado", idChamado);
                 startActivity(intent);
+
             }
 
             @Override
@@ -206,70 +154,62 @@ public class ModeloFragment extends Fragment {
         return view;
     }
 
+    private void adicionarEventos(Date data) {
+        try {
+            List<String> listaDatas;
+            ChamadosController controller = new ChamadosController(context);
+            listaDatas = controller.buscarDatas(idTecnico);
+            String dataAux = "";
+
+            for (String datas : listaDatas) {
+                dataAux = datas;
+                for (int i = 4; i < 7; i++) {
+                    char c = dataAux.charAt(i);
+                    mes = mes + String.valueOf(c);
+                }
+                for (int i = 8; i < 10; i++) {
+                    char c = dataAux.charAt(i);
+                    dia = dia + String.valueOf(c);
+                }
+                for (int i = 29; i <= 33; i++) {
+                    char c = dataAux.charAt(i);
+                    ano = ano + String.valueOf(c);
+                }
+
+                mes = util.mesNumerico(mes);
+                dataCompleta = mes + "/" + dia + "/" + ano;
+                SimpleDateFormat formato = new SimpleDateFormat("MM/dd/yyyy");
+                Date dataConvertida = formato.parse(dataCompleta);
+
+                if (dataConvertida.before(data)) {
+
+                    this.epoch = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dataCompleta + " 14:30:00").getTime();
+                    Event ev = new Event(Color.RED, epoch);
+                    compactCalendarView.addEvent(ev);
+                    ev = null;
+                    this.epoch = 0;
+                    zerarData();
+
+                } else if (dataConvertida.after(data)) {
+
+                    this.epoch = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(dataCompleta + " 14:30:00").getTime();
+                    Event ev = new Event(Color.BLUE, epoch);
+                    compactCalendarView.addEvent(ev);
+                    ev = null;
+                    this.epoch = 0;
+                    zerarData();
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void zerarData() {
         ano = "";
         mes = "";
         dia = "";
-        gg = "";
         dataCompleta = "";
-    }
-
-    private String mesNumerico(String mes) {
-        if (mes.trim().equals("Jan")) {
-            return "01-";
-        } else if (mes.trim().equals("Feb")) {
-            return "02-";
-        } else if (mes.trim().equals("Mar")) {
-            return "03-";
-        } else if (mes.trim().equals("Apr")) {
-            return "04-";
-        } else if (mes.trim().equals("May")) {
-            return "05-";
-        } else if (mes.trim().equals("Jun")) {
-            return "06-";
-        } else if (mes.trim().equals("Jul")) {
-            return "07-";
-        } else if (mes.trim().equals("Aug")) {
-            return "08-";
-        } else if (mes.trim().equals("Sep")) {
-            return "09-";
-        } else if (mes.trim().equals("Oct")) {
-            return "10-";
-        } else if (mes.trim().equals("Nov")) {
-            return "11-";
-        } else if (mes.trim().equals("Dec")) {
-            return "12-";
-        }
-        return null;
-    }
-
-    private String mesPt(String mes) {
-        if (mes.trim().equals("Jan")) {
-            return "Janeiro";
-        } else if (mes.trim().equals("Feb")) {
-            return "Fevereiro";
-        } else if (mes.trim().equals("Mar")) {
-            return "Março";
-        } else if (mes.trim().equals("Apr")) {
-            return "Abril";
-        } else if (mes.trim().equals("May")) {
-            return "Maio";
-        } else if (mes.trim().equals("Jun")) {
-            return "Junho";
-        } else if (mes.trim().equals("Jul")) {
-            return "Julho";
-        } else if (mes.trim().equals("Aug")) {
-            return "Agosto";
-        } else if (mes.trim().equals("Sep")) {
-            return "Setembro";
-        } else if (mes.trim().equals("Oct")) {
-            return "Outubro";
-        } else if (mes.trim().equals("Nov")) {
-            return "Novembro";
-        } else if (mes.trim().equals("Dec")) {
-            return "Dezembro";
-        }
-        return null;
     }
 
     private void setarMesView(Date dataCalender) {
@@ -284,8 +224,8 @@ public class ModeloFragment extends Fragment {
             char c = data.charAt(i);
             ano = ano + String.valueOf(c);
         }
-        String mesPortugues = mesPt(mes);
-        txtMes.setText(mesPortugues +" -" + ano);
+        String mesPortugues = util.mesPt(mes);
+        txtMes.setText(mesPortugues + " -" + ano);
         zerarData();
     }
 
@@ -306,9 +246,9 @@ public class ModeloFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
                 bloquearChamado(viewHolder);
-
+                adapterAgendados.notifyItemRemoved(viewHolder.getAdapterPosition());
+                adapterAgendados.notifyDataSetChanged();
             }
         };
 
@@ -326,15 +266,13 @@ public class ModeloFragment extends Fragment {
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int position = viewHolder.getAdapterPosition();
-                chamado = listaChamados.get(position);
+                chamado = listaChamados.get(viewHolder.getAdapterPosition());
                 int idChamado = chamado.getID();
                 Intent intent = new Intent(getActivity(), JustificarActivity.class);
                 intent.putExtra("id_chamado", idChamado);
                 intent.putExtra("tipo_status", "Bloqueio");
                 startActivity(intent);
-                teste = position;
-                adapterAgendados.notifyItemRemoved(teste);
+                adapterAgendados.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
         });
 
@@ -370,12 +308,13 @@ public class ModeloFragment extends Fragment {
             ano = ano + String.valueOf(c);
         }
 
-        dataCompleta = ano.trim() + "-" + mesNumerico(mes) + dia;
-        ChamadosController controller = popularRecyclerView();
+        dataCompleta = ano.trim() + "-" + util.mesNumerico(mes) + "-" + dia;
 
+        popularRecyclerView(dataSelecionada);
+        ChamadosController controller = new ChamadosController(context);
         try {
             List<String> listaDatas;
-            listaDatas = controller.buscarAgendadosHoje(idTecnico, dataCompleta);
+            listaDatas = controller.buscarAgendadosHoje(idTecnico, dataSelecionada);
             zerarData();
             String teste = "";
 
@@ -410,22 +349,22 @@ public class ModeloFragment extends Fragment {
         }
     }
 
-    private ChamadosController popularRecyclerView() {
+    private void popularRecyclerView(String data) {
         ChamadosController controller = new ChamadosController(context);
-        listaChamados = controller.buscarAgendadoPorData(dataCompleta, idTecnico);
+        listaChamados = controller.buscarAgendadoPorData(data, idTecnico);
         if (listaChamados.size() == 0) {
             txtFundo.setVisibility(View.VISIBLE);
             imgFundo.setVisibility(View.VISIBLE);
         } else {
             txtFundo.setVisibility(View.INVISIBLE);
             imgFundo.setVisibility(View.INVISIBLE);
+
+            adapterAgendados = new AdapterAgendados(listaChamados, context);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapterAgendados);
         }
-        adapterAgendados = new AdapterAgendados(listaChamados, context);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapterAgendados);
-        return controller;
     }
 
     private Date prepararData(Date hoje) throws ParseException {
@@ -451,10 +390,4 @@ public class ModeloFragment extends Fragment {
         return data;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapterAgendados.notifyItemRemoved(teste);
-        popularRecyclerView();
-    }
 }

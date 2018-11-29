@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.controller.ChamadosController;
-import tcc.etec.needful.view.view.model.UsuarioModel;
+import tcc.etec.needful.view.view.model.UsuarioVO;
 
 public class StatusFragment extends Fragment {
 
@@ -34,7 +34,6 @@ public class StatusFragment extends Fragment {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class StatusFragment extends Fragment {
         Bundle id = getArguments();
         this.idTecnico = id.getInt("id_tecnico");
 
-        UsuarioModel user = new UsuarioModel();
+        UsuarioVO user = new UsuarioVO();
         context = getContext();
         controller = new ChamadosController(context);
         user = controller.buscarTecnicoPorId(this.idTecnico);

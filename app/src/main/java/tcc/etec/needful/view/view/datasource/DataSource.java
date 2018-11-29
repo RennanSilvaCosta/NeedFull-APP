@@ -6,14 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import tcc.etec.needful.view.view.datamodel.ChamadosDataModel;
 import tcc.etec.needful.view.view.datamodel.ClienteDataModel;
@@ -22,15 +23,15 @@ import tcc.etec.needful.view.view.datamodel.UsuarioDataModel;
 import tcc.etec.needful.view.view.model.ChamadosVO;
 import tcc.etec.needful.view.view.model.ClienteVO;
 import tcc.etec.needful.view.view.model.EnderecoVO;
-import tcc.etec.needful.view.view.model.UsuarioModel;
+import tcc.etec.needful.view.view.model.UsuarioVO;
 import tcc.etec.needful.view.view.util.UtilChamados;
 
 public class DataSource extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "needful.sqlite";
     private static final int DB_VERSION = 1;
-    static SimpleDateFormat sdfData = new SimpleDateFormat("yyyy/MM/dd");
-    static SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    DateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+
 
     SQLiteDatabase db;
     Cursor cursor;
@@ -43,17 +44,6 @@ public class DataSource extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        try {
-            db.execSQL(ChamadosDataModel.criarTabela());
-            db.execSQL(UsuarioDataModel.criarTabela());
-            db.execSQL(ClienteDataModel.criarTabela());
-            db.execSQL(EnderecoDataModel.criarTabela());
-
-        } catch (Exception e) {
-
-            Log.e("chamados", "DB---> ERRO: " + e.getMessage());
-
-        }
     }
 
     @Override
@@ -68,10 +58,8 @@ public class DataSource extends SQLiteOpenHelper {
             retorno = db.insert(tabela, null,
                     dados) > 0;
         } catch (Exception e) {
-
             retorno = false;
         }
-
         return retorno;
     }
 
@@ -85,7 +73,6 @@ public class DataSource extends SQLiteOpenHelper {
                 " AND chamado.id_status_chamado=1 OR chamado.id_status_chamado=2";
 
         cursor = db.rawQuery(comandoSQL, null);
-
         return getChamadosVOS(lista);
     }
 
@@ -137,41 +124,63 @@ public class DataSource extends SQLiteOpenHelper {
             cliente = new ClienteVO();
             endereco = new EnderecoVO();
 
-            chamados.setID(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getId())));
-            // chamados.setData(Date.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getDataChamado()))));
-            chamados.setHoras(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getHoraChamado()))));
-            // chamados.setAgendamento_Data(Date.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoDataChamado()))));
-            chamados.setAgendamento_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoHoraChamado()))));
-            chamados.setDescricao(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getObservacaoChamado())));
-            chamados.setIdTecnico(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTecnico())));
-            chamados.setTipoChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTipoChamado())));
-            chamados.setIdStatusChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdStatusChamado())));
-            // chamados.setConfirmacao_Data(Date.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoData_chamado()))));
-            chamados.setConfirmacao_Horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoHora_chamado()))));
-            // chamados.setFinalizacao_Data(Date.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoData_chamado()))));
-            chamados.setFinalizacao_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoHora_chamado()))));
-            chamados.setJustificativa(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getJustificativa())));
+            try {
 
-            cliente.setId(cursor.getInt(cursor.getColumnIndex(ClienteDataModel.getIdCliente())));
-            cliente.setNome(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getNomeCliente())));
-            cliente.seteMail(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getEmailCliente())));
-            cliente.setLogin(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getLoginCliente())));
-            cliente.setSenha(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getSenhaCliente())));
-            cliente.setTelefone(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getTelefoneCliente())));
-            cliente.setCelular(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getCelularCliente())));
-            cliente.setRoteador(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getEquipamentoCliente())));
-            cliente.setCabeamento(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getCaboCliente())));
+                chamados.setID(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getId())));
 
-            endereco.setId(cursor.getInt(cursor.getColumnIndex(EnderecoDataModel.getIdEndereco())));
-            endereco.setRua(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getRuaEndereco())));
-            endereco.setBairro(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getBairroEndereco())));
-            endereco.setNumero(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getNumeroEdenreco())));
-            endereco.setCep(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getCepEndereco())));
-            endereco.setComplemento(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getComplementoEndereco())));
-            endereco.setReferencia(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getReferenciaEndereco())));
+                String auxData = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getDataChamado()));
+                Date data = inputFormat.parse(auxData);
+                chamados.setData(data);
 
-            chamados.setClientVO(cliente);
-            cliente.setEnderecoVO(endereco);
+                chamados.setHoras(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getHoraChamado()))));
+
+                String auxDataAgend = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoDataChamado()));
+                Date dataAgend = inputFormat.parse(auxDataAgend);
+                chamados.setAgendamento_Data(dataAgend);
+
+                chamados.setAgendamento_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoHoraChamado()))));
+                chamados.setDescricao(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getObservacaoChamado())));
+                chamados.setIdTecnico(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTecnico())));
+                chamados.setTipoChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTipoChamado())));
+                chamados.setIdStatusChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdStatusChamado())));
+
+                String auxDataConf = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoData_chamado()));
+                Date dataConf = inputFormat.parse(auxDataConf);
+                chamados.setConfirmacao_Data(dataConf);
+
+                chamados.setConfirmacao_Horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoHora_chamado()))));
+
+                String auxDataFin = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getFinalizacaoData_chamado()));
+                Date dataFin = inputFormat.parse(auxDataFin);
+                chamados.setFinalizacao_Data(dataFin);
+
+                chamados.setFinalizacao_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getFinalizacaoHora_chamado()))));
+                chamados.setJustificativa(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getJustificativa())));
+
+                cliente.setId(cursor.getInt(cursor.getColumnIndex(ClienteDataModel.getIdCliente())));
+                cliente.setNome(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getNomeCliente())));
+                cliente.seteMail(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getEmailCliente())));
+                cliente.setLogin(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getLoginCliente())));
+                cliente.setSenha(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getSenhaCliente())));
+                cliente.setTelefone(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getTelefoneCliente())));
+                cliente.setCelular(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getCelularCliente())));
+                cliente.setRoteador(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getEquipamentoCliente())));
+                cliente.setCabeamento(cursor.getString(cursor.getColumnIndex(ClienteDataModel.getCaboCliente())));
+
+                endereco.setId(cursor.getInt(cursor.getColumnIndex(EnderecoDataModel.getIdEndereco())));
+                endereco.setRua(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getRuaEndereco())));
+                endereco.setBairro(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getBairroEndereco())));
+                endereco.setNumero(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getNumeroEdenreco())));
+                endereco.setCep(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getCepEndereco())));
+                endereco.setComplemento(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getComplementoEndereco())));
+                endereco.setReferencia(cursor.getString(cursor.getColumnIndex(EnderecoDataModel.getReferenciaEndereco())));
+
+                chamados.setClientVO(cliente);
+                cliente.setEnderecoVO(endereco);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             cursor.close();
             return chamados;
@@ -184,9 +193,6 @@ public class DataSource extends SQLiteOpenHelper {
 
     public ArrayList<ChamadosVO> buscarAgendadoPorData(String dataCompleta, int idTecnico) {
 
-        ChamadosVO chamados;
-        ClienteVO cliente;
-        EnderecoVO endereco;
         ArrayList<ChamadosVO> lista = new ArrayList<>();
 
         String comandoSQL = "SELECT chamado.*, cliente.*, endereco.* FROM chamado \n" +
@@ -200,11 +206,11 @@ public class DataSource extends SQLiteOpenHelper {
 
     }
 
-    public UsuarioModel buscarUsuario(String login) {
+    public UsuarioVO buscarUsuario(String login) {
 
-        UsuarioModel user = new UsuarioModel();
+        UsuarioVO user = new UsuarioVO();
 
-        cursor = db.rawQuery("SELECT * FROM usuario WHERE email_usuario = " + "'" + login + "'", null);
+        cursor = db.rawQuery("SELECT * FROM usuarios WHERE email_usuario = " + "'" + login + "'", null);
 
         if (cursor.moveToFirst()) {
 
@@ -225,11 +231,11 @@ public class DataSource extends SQLiteOpenHelper {
 
     }
 
-    public UsuarioModel buscarTecnicoPorId(int id) {
+    public UsuarioVO buscarTecnicoPorId(int id) {
 
-        UsuarioModel user = new UsuarioModel();
+        UsuarioVO user = new UsuarioVO();
 
-        cursor = db.rawQuery("SELECT * FROM usuario WHERE id_usuario=" + id, null);
+        cursor = db.rawQuery("SELECT * FROM usuarios WHERE id_usuario=" + id, null);
 
         if (cursor.moveToFirst()) {
 
@@ -312,8 +318,8 @@ public class DataSource extends SQLiteOpenHelper {
         cursor = db.rawQuery(comandoSQL, null);
         if (cursor.moveToFirst()) {
             do {
-                String datas = cursor.getString(cursor.getColumnIndex("agendamentoData_chamado"));
-                lista.add(datas);
+                String data = cursor.getString(cursor.getColumnIndex("agendamentoData_chamado"));
+                lista.add(data);
             } while (cursor.moveToNext());
             cursor.close();
             return lista;
@@ -331,8 +337,8 @@ public class DataSource extends SQLiteOpenHelper {
         cursor = db.rawQuery(comandoSQL, null);
         if (cursor.moveToFirst()) {
             do {
-                String datas = cursor.getString(cursor.getColumnIndex("agendamentoData_chamado"));
-                lista.add(datas);
+                String data = cursor.getString(cursor.getColumnIndex("agendamentoData_chamado"));
+                lista.add(data);
             } while (cursor.moveToNext());
             cursor.close();
             return lista;
@@ -374,13 +380,14 @@ public class DataSource extends SQLiteOpenHelper {
 
                     chamados.setID(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getId())));
 
-                    String auxData = sdfData.format(cursor.getColumnIndex(ChamadosDataModel.getDataChamado()));
-                    Date data = sdfData.parse(auxData);
-                    chamados.setAgendamento_Data(data);
+                    String auxData = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getDataChamado()));
+                    Date data = inputFormat.parse(auxData);
+                    chamados.setData(data);
+
                     chamados.setHoras(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getHoraChamado()))));
 
-                    String auxDateAgend = sdfData.format(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoDataChamado()));
-                    Date dataAgend = sdfData.parse(auxDateAgend);
+                    String auxDataAgend = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoDataChamado()));
+                    Date dataAgend = inputFormat.parse(auxDataAgend);
                     chamados.setAgendamento_Data(dataAgend);
 
                     chamados.setAgendamento_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getAgendamentoHoraChamado()))));
@@ -388,13 +395,17 @@ public class DataSource extends SQLiteOpenHelper {
                     chamados.setIdTecnico(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTecnico())));
                     chamados.setTipoChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdTipoChamado())));
                     chamados.setIdStatusChamado(cursor.getInt(cursor.getColumnIndex(ChamadosDataModel.getIdStatusChamado())));
-                    String auxDataConf = sdfData.format(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoData_chamado()));
-                    Date dataConf = sdfData.parse(auxDataConf);
-                    chamados.setData(dataConf);
+
+                    String auxDataConf = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoData_chamado()));
+                    Date dataConf = inputFormat.parse(auxDataConf);
+                    chamados.setConfirmacao_Data(dataConf);
+
                     chamados.setConfirmacao_Horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getConfirmacaoHora_chamado()))));
-                    String auxDataFin = sdfData.format(cursor.getColumnIndex(ChamadosDataModel.getFinalizacaoData_chamado()));
-                    Date dataFin = sdfData.parse(auxDataFin);
-                    chamados.setData(dataFin);
+
+                    String auxDataFin = cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getFinalizacaoData_chamado()));
+                    Date dataFin = inputFormat.parse(auxDataFin);
+                    chamados.setFinalizacao_Data(dataFin);
+
                     chamados.setFinalizacao_horas(Time.valueOf(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getFinalizacaoHora_chamado()))));
                     chamados.setJustificativa(cursor.getString(cursor.getColumnIndex(ChamadosDataModel.getJustificativa())));
 

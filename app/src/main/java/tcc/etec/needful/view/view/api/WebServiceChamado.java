@@ -44,40 +44,25 @@ public class WebServiceChamado {
 
     public List<ChamadosVO> listagempost(ChamadosVO chamados) throws IOException, ExecutionException, InterruptedException {
         String json = gson.toJson(chamados);
-        String retornoJson = new WebService(listagemFiltro,GET).execute().get();
-
+        String retornoJson = new WebService(listagemFiltro, GET).execute().get();
         return gson.fromJson(retornoJson, listChamadoType);
     }
 
-   /* public boolean fecharChamado(ChamadosVO chamados) throws IOException {
+    public boolean fecharChamado(ChamadosVO chamados) throws IOException, ExecutionException, InterruptedException {
         String json = gson.toJson(chamados);
-
-        return Boolean.parseBoolean(httpClient.sendPUT(FECHARCHAMADO, json, PUT));
+        return new Boolean(new WebService(FECHARCHAMADO, json, PUT).execute().get());
     }
 
-    public ChamadosVO carregarTelaEdicaoInstalacao(ChamadosVO chamados) throws IOException {
-        String json = gson.toJson(chamados);
-
-        return gson.fromJson(httpClient.sendPOST(CARREGARTELADEINSTALACAO, json, POST), chamadoType);
-    }
-
-    public ChamadosVO carregarteladeManuntecao(ChamadosVO chamados) throws IOException {
-        String json = gson.toJson(chamados);
-
-        return gson.fromJson(httpClient.sendPOST(carregarteladeManuntecao, json, POST), chamadoType);
-    }
-*/
     public boolean atualizarInstalacao(ChamadosVO chamados) throws ExecutionException, InterruptedException {
         String json = gson.toJson(chamados);
         System.out.println(json);
-
-  return new Boolean(new WebService(atualizarInstalacao,json,PUT).execute().get());
+        return new Boolean(new WebService(atualizarInstalacao, json, PUT).execute().get());
     }
 
     public boolean atualizarmanutencao(ChamadosVO chamados) throws ExecutionException, InterruptedException {
         String json = gson.toJson(chamados);
         System.out.println(json);
-        return new Boolean(new WebService(atualizarmanutencao,json,PUT).execute().get());
+        return new Boolean(new WebService(atualizarmanutencao, json, PUT).execute().get());
     }
 
 }

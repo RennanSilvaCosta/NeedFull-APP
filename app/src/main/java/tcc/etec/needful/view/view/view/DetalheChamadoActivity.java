@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import tcc.etec.needful.R;
+import tcc.etec.needful.view.view.api.WebServiceChamado;
 import tcc.etec.needful.view.view.controller.ChamadosController;
 import tcc.etec.needful.view.view.helper.Permissoes;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.util.AlterarAsynTask;
+import tcc.etec.needful.view.view.util.UtilChamados;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,7 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class DetalheChamadoActivity extends AppCompatActivity {
 
@@ -33,8 +38,10 @@ public class DetalheChamadoActivity extends AppCompatActivity {
     ChamadosVO chamados;
     Context context;
     private int idChamado;
+    DateFormat formatData = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    UtilChamados util = new UtilChamados();
 
-    TextView nomeCliente,dataAgendado, horaAgendado, cepCliente,complementoCliente,bairroCliente,enderecoCliente,telefoneCliente,celularCliente,roteador,referenciaCliente,observacoes,loginCliente,senhaCliente;
+    TextView nomeCliente, dataAgendado, horaAgendado, cepCliente, complementoCliente, bairroCliente, enderecoCliente, telefoneCliente, celularCliente, roteador, referenciaCliente, observacoes, loginCliente, senhaCliente;
     ImageView imgConfirmar, imgLocalizar, ligarTelefone, ligarCelular;
 
     private String[] permissoes = new String[]{
@@ -58,7 +65,7 @@ public class DetalheChamadoActivity extends AppCompatActivity {
 
         inicializarComponentes();
         popularComponentes();
-        getSupportActionBar().setTitle(tipoChamado(chamados.getTipoChamado()));
+        getSupportActionBar().setTitle(util.tipoChamado(chamados.getTipoChamado()));
         exibirTelefone(chamados.getClientVO().getTelefone(), telefoneCliente, ligarTelefone);
         exibirCelular(chamados.getClientVO().getCelular(), celularCliente, ligarCelular);
 
@@ -91,13 +98,27 @@ public class DetalheChamadoActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        WebServiceChamado web = new WebServiceChamado();
 
                         chamados.setIdStatusChamado(2);
                         chamados.setConfirmacao_Data(new Date());
                         ChamadosController controller = new ChamadosController(context);
                         controller.alterar(chamados);
-                        AlterarAsynTask alterar = new AlterarAsynTask(chamados, context);
-                        alterar.execute();
+
+                        ChamadosVO chamado = new ChamadosVO();
+                        chamado.setIdStatusChamado(2);
+                        chamado.setID(chamados.getID());
+                        try {
+                            boolean teste = web.atualizarInstalacao(chamado);
+                            if(teste){
+                                Toast.makeText(context, "teste", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
                         ativarDesativarBotaoConfirmar();
                         Toast.makeText(context, "Chamado confirmado com sucesso!", Toast.LENGTH_SHORT).show();
                     }
@@ -131,18 +152,12 @@ public class DetalheChamadoActivity extends AppCompatActivity {
 
     }
 
-    private String tipoChamado(int chamado){
-        if(chamado == 1){
-            return "Instalação";
-        }else if (chamado == 2){
-            return "Manutenção";
-        }
-        return null;
-    }
-
     private void popularComponentes() {
+
+        String dataAgen = formatData.format(chamados.getAgendamento_Data());
+
         nomeCliente.setText(chamados.getClientVO().getNome());
-        dataAgendado.setText(String.valueOf(chamados.getAgendamento_Data()));
+        dataAgendado.setText(String.valueOf(dataAgen));
         horaAgendado.setText(String.valueOf(chamados.getAgendamento_horas()));
         loginCliente.setText(chamados.getClientVO().getLogin());
         senhaCliente.setText(chamados.getClientVO().getSenha());
@@ -150,7 +165,7 @@ public class DetalheChamadoActivity extends AppCompatActivity {
         observacoes.setText(chamados.getDescricao());
         cepCliente.setText(chamados.getClientVO().getEnderecoVO().getCep());
         bairroCliente.setText(chamados.getClientVO().getEnderecoVO().getBairro());
-        enderecoCliente.setText(chamados.getClientVO().getEnderecoVO().getRua() + ", "+ chamados.getClientVO().getEnderecoVO().getNumero() );
+        enderecoCliente.setText(chamados.getClientVO().getEnderecoVO().getRua() + ", " + chamados.getClientVO().getEnderecoVO().getNumero());
         complementoCliente.setText(chamados.getClientVO().getEnderecoVO().getComplemento());
         referenciaCliente.setText(chamados.getClientVO().getEnderecoVO().getReferencia());
         telefoneCliente.setText(chamados.getClientVO().getTelefone());
@@ -223,12 +238,12 @@ public class DetalheChamadoActivity extends AppCompatActivity {
         }
     }
 
-    private void fazerLigacaoTelefone(){
+    private void fazerLigacaoTelefone() {
         Intent i = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", chamados.getClientVO().getTelefone(), null));
         startActivity(i);
     }
 
-    private void fazerLigacaoCelular(){
+    private void fazerLigacaoCelular() {
         Intent i = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", chamados.getClientVO().getCelular(), null));
         startActivity(i);
     }
@@ -237,17 +252,17 @@ public class DetalheChamadoActivity extends AppCompatActivity {
         if (chamados.getIdStatusChamado() == 2) {
             imgConfirmar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confirmar_desabilitado));
             imgConfirmar.setEnabled(false);
-        } else if (chamados.getIdStatusChamado() == 6){
+        } else if (chamados.getIdStatusChamado() == 6) {
             imgConfirmar.setEnabled(false);
             imgLocalizar.setEnabled(false);
             imgLocalizar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_location_desabilitado));
             imgConfirmar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confirmar_desabilitado));
-        }else if(chamados.getIdStatusChamado() == 5){
+        } else if (chamados.getIdStatusChamado() == 5) {
             imgConfirmar.setEnabled(false);
             imgLocalizar.setEnabled(false);
             imgLocalizar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_location_desabilitado));
             imgConfirmar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confirmar_desabilitado));
-        }else if (chamados.getIdStatusChamado() == 4) {
+        } else if (chamados.getIdStatusChamado() == 4) {
             imgConfirmar.setEnabled(false);
             imgLocalizar.setEnabled(false);
             imgLocalizar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_location_desabilitado));

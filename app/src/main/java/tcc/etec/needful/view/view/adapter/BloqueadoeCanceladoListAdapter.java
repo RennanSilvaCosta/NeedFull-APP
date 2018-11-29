@@ -15,14 +15,17 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.controller.ChamadosController;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.util.AlterarAsynTask;
+import tcc.etec.needful.view.view.util.UtilChamados;
 
 public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> implements View.OnClickListener {
 
@@ -32,6 +35,9 @@ public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> imp
     ChamadosController controller;
     ArrayList<ChamadosVO> dados;
     ArrayList<ChamadosVO> lista;
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    UtilChamados util = new UtilChamados();
 
     private static class ViewHolder {
         TextView txt_Tipo_Chamado;
@@ -98,8 +104,6 @@ public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> imp
                             controller = new ChamadosController(getContext());
                             controller.alterar(chamadosVO);
 
-                            AlterarAsynTask alterar = new AlterarAsynTask(chamadosVO, context);
-                            alterar.execute();
                             lista = controller.listarBloqueadoCancelado(chamadosVO.getIdTecnico());
                             atualizarLista(lista);
                             notifyDataSetChanged();
@@ -127,8 +131,6 @@ public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> imp
                             ChamadosController controller = new ChamadosController(getContext());
                             controller.alterar(chamadosVO);
 
-                            AlterarAsynTask alterar = new AlterarAsynTask(chamadosVO, context);
-                            alterar.execute();
                             lista = controller.listarBloqueadoCancelado(chamadosVO.getIdTecnico());
                             atualizarLista(lista);
                             notifyDataSetChanged();
@@ -174,11 +176,14 @@ public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> imp
             linha = (ViewHolder) dataSet.getTag();
         }
 
-        linha.txt_Tipo_Chamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
+        String dataFinal = formatDate.format(chamadosVO.getFinalizacao_Data());
+        String horaFinal = sdfHora.format(chamadosVO.getFinalizacao_horas());
+
+        linha.txt_Tipo_Chamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
         linha.txt_Nome_Cliente.setText(chamadosVO.getClientVO().getNome());
         linha.txt_Endereco_cliente.setText(chamadosVO.getClientVO().getEnderecoVO().getRua());
-        linha.data_bloq_canc.setText(String.valueOf(chamadosVO.getFinalizacao_Data())); //POR ENQUANTO ESTOU USANDO A DATA DE FINALIZAÇÃO!
-        linha.hora_bloq_canc.setText(String.valueOf(chamadosVO.getFinalizacao_horas())); //POR ENQUANTO ESTOU USANDO A HORA DE FINALIZAÇÃO!
+        linha.data_bloq_canc.setText(String.valueOf(dataFinal));
+        linha.hora_bloq_canc.setText(String.valueOf(horaFinal));
 
         if (chamadosVO.getIdStatusChamado() == 5) {
             linha.status.setText("Bloqueado");
@@ -208,14 +213,5 @@ public class BloqueadoeCanceladoListAdapter extends ArrayAdapter<ChamadosVO> imp
         notifyDataSetChanged();
     }
 
-    private String tipoChamado(int tipoChamado) {
-
-        if (tipoChamado == 1) {
-            return "Instalação";
-        } else if (tipoChamado == 2) {
-            return "Manutenção";
-        }
-        return null;
-    }
 
 }

@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -25,9 +28,9 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
 
     Context context;
     ArrayList<ChamadosVO> dados;
-    AlertDialog.Builder build;
-    AlertDialog alert;
     UtilChamados util = new UtilChamados();
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
 
     private static class ViewHolder {
 
@@ -54,9 +57,7 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
     public void onClick(View view) {
 
         int posicao = (Integer) view.getTag();
-
         Object object = getItem(posicao);
-
         final ChamadosVO chamadosVO = (ChamadosVO) object;
 
         switch (view.getId()) {
@@ -66,13 +67,13 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
 
                     if (chamadosVO.getTipoChamado() == 2) {
 
-                        Snackbar.make(view, "Manutenção finalizada: " + chamadosVO.getFinalizacao_Data() + " Ás " + chamadosVO.getFinalizacao_horas()  /*COLOCAR DATA E HORA DA FINALIAÇÃO DO CHAMADO*/,
+                        Snackbar.make(view, "Manutenção finalizada: " + formatDate.format(chamadosVO.getFinalizacao_Data()) + " Ás " + sdfHora.format(chamadosVO.getFinalizacao_horas()),
                                 Snackbar.LENGTH_LONG)
                                 .setAction("No action", null).show();
 
                     } else {
 
-                        Snackbar.make(view, "Instalação finalizada: "+ chamadosVO.getFinalizacao_Data() + " Ás " + chamadosVO.getFinalizacao_horas(),
+                        Snackbar.make(view, "Instalação finalizada: " + formatDate.format(chamadosVO.getFinalizacao_Data()) + " Ás " + sdfHora.format(chamadosVO.getFinalizacao_horas()),
                                 Snackbar.LENGTH_LONG)
                                 .setAction("No action", null).show();
                     }
@@ -125,7 +126,7 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
             linha = (FinalizadosListAdapter.ViewHolder) dataSet.getTag();
         }
 
-        linha.txt_tipo_chamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
+        linha.txt_tipo_chamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
 
         if (chamadosVO.getIdStatusChamado() == 4) {
             linha.status.setText("Finalizado");
@@ -135,11 +136,14 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
             linha.img_finalizar_chamado.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_chamado_finalizado));
         }
 
-        linha.txt_tipo_chamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
+        String dataFina = formatDate.format(chamadosVO.getFinalizacao_Data());
+        String horaFin = sdfHora.format(chamadosVO.getFinalizacao_horas());
+
+        linha.txt_tipo_chamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
         linha.txt_nome_cliente.setText(chamadosVO.getClientVO().getNome());
         linha.txt_endereco_cliente.setText(chamadosVO.getClientVO().getEnderecoVO().getRua());
-        linha.data_finalizado.setText(String.valueOf(chamadosVO.getFinalizacao_Data()));
-        linha.hora_finalizado.setText(String.valueOf(chamadosVO.getFinalizacao_horas()));
+        linha.data_finalizado.setText(String.valueOf(dataFina));
+        linha.hora_finalizado.setText(String.valueOf(horaFin));
 
         linha.img_tipo_chamado.setOnClickListener(this);
         linha.img_tipo_chamado.setTag(position);
@@ -149,13 +153,4 @@ public class FinalizadosListAdapter extends ArrayAdapter<ChamadosVO> implements 
         return dataSet;
     }
 
-    private String tipoChamado(int tipoChamado) {
-
-        if (tipoChamado == 2) {
-            return "Manutenção";
-        } else if (tipoChamado == 1) {
-            return "instalação";
-        }
-        return null;
-    }
 }

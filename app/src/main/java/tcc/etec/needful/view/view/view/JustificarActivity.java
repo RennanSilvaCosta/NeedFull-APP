@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.controller.ChamadosController;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.util.AlterarAsynTask;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,7 +16,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class JustificarActivity extends AppCompatActivity {
 
@@ -33,6 +35,8 @@ public class JustificarActivity extends AppCompatActivity {
     private TextView txtHora;
     private TextView obs;
     private EditText txtComentario;
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,6 @@ public class JustificarActivity extends AppCompatActivity {
                     chamado.setIdStatusChamado(5);
                     chamado.setFinalizacao_Data(new Date());
                     controller.alterar(chamado);
-                    AlterarAsynTask alterar = new AlterarAsynTask(chamado, context);
-                    alterar.execute();
                     Toast.makeText(context, "Chamado bloqueado e justificado com sucesso.", Toast.LENGTH_LONG).show();
                     finish();
                 }else if (titulo.trim().equals("Cancelamento")){
@@ -82,8 +84,6 @@ public class JustificarActivity extends AppCompatActivity {
                             chamado.setIdStatusChamado(6);
                             chamado.setFinalizacao_Data(new Date());
                             controller.alterar(chamado);
-                            AlterarAsynTask alterar = new AlterarAsynTask(chamado, context);
-                            alterar.execute();
                             Toast.makeText(context, "Chamado cancelado e justificado com sucesso.", Toast.LENGTH_LONG).show();
                             finish();
                         }
@@ -113,11 +113,15 @@ public class JustificarActivity extends AppCompatActivity {
     }
 
     private void popularComponentes() {
+
+        String data = formatDate.format(chamado.getData());
+        String hora = sdfHora.format(chamado.getHoras());
+
         txtNome.setText(chamado.getClientVO().getNome());
         txtEndereco.setText(chamado.getClientVO().getEnderecoVO().getRua() + ", " + chamado.getClientVO().getEnderecoVO().getNumero());
         txtBairro.setText(chamado.getClientVO().getEnderecoVO().getBairro());
-        txtData.setText(String.valueOf(chamado.getData()));
-        txtHora.setText(String.valueOf(chamado.getHoras()));
+        txtData.setText(String.valueOf(data));
+        txtHora.setText(String.valueOf(hora));
     }
 
     private int recuperaIdChamado() {

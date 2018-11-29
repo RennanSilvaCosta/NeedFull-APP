@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.ParseException;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,9 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import tcc.etec.needful.R;
 import tcc.etec.needful.view.view.controller.ChamadosController;
-import tcc.etec.needful.view.view.datamodel.ChamadosDataModel;
 import tcc.etec.needful.view.view.model.ChamadosVO;
-import tcc.etec.needful.view.view.util.AlterarAsynTask;
+import tcc.etec.needful.view.view.util.UtilChamados;
 
 public class AgendadosListAdapter extends ArrayAdapter<ChamadosVO> implements View.OnClickListener {
 
@@ -36,6 +35,7 @@ public class AgendadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vi
     ArrayList<ChamadosVO> dados;
     static SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
     static SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+    UtilChamados util = new UtilChamados();
 
     private static class ViewHolder {
 
@@ -88,14 +88,11 @@ public class AgendadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            ArrayList<ChamadosVO> lista = new ArrayList<>();
-
+                            ArrayList<ChamadosVO> lista;
                             chamadosVO.setIdStatusChamado(4);
+                            chamadosVO.setFinalizacao_Data(new Date());
                             ChamadosController controller = new ChamadosController(getContext());
                             controller.alterar(chamadosVO);
-
-                            AlterarAsynTask alterar = new AlterarAsynTask(chamadosVO, context);
-                            alterar.execute();
 
                             lista = controller.listarAgendados(chamadosVO.getIdTecnico());
                             atualizarLista(lista);
@@ -177,7 +174,7 @@ public class AgendadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vi
         String auxDateAgend = sdfData.format(chamadosVO.getAgendamento_Data());
         String auxHoraAgend = sdfHora.format(chamadosVO.getAgendamento_horas());
 
-        linha.txt_Tipo_Chamado.setText(tipoChamado(chamadosVO.getTipoChamado()));
+        linha.txt_Tipo_Chamado.setText(util.tipoChamado(chamadosVO.getTipoChamado()));
         linha.txt_Nome_Cliente.setText(chamadosVO.getClientVO().getNome());
         linha.txt_Endereco_cliente.setText(chamadosVO.getClientVO().getEnderecoVO().getRua());
         linha.data_agendado.setText(String.valueOf(auxDateAgend));
@@ -196,15 +193,5 @@ public class AgendadosListAdapter extends ArrayAdapter<ChamadosVO> implements Vi
         this.dados.addAll(novosDados);
         notifyDataSetChanged();
     }
-
-    private String tipoChamado(int tipoChamado) {
-        if (tipoChamado == 2) {
-            return "Manutenção";
-        } else if (tipoChamado == 1) {
-            return "Instalação";
-        }
-        return null;
-    }
-
 
 }

@@ -2,7 +2,7 @@ package tcc.etec.needful.view.view.model;
 
 import java.io.Serializable;
 
-public class UsuarioModel implements Serializable {
+public class UsuarioVO implements Serializable {
 
     private int id;
     private String nome;

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import androidx.fragment.app.Fragment;
 import tcc.etec.needful.R;
@@ -126,6 +127,7 @@ public class ChamadosFragment extends Fragment {
 
                         ChamadosVO chamadosVO = dataSet.get(posicao);
                         int idChamado = chamadosVO.getID();
+                        chamadosVO.setFinalizacao_Data(new Date());
                         Intent intent = new Intent(getActivity(), JustificarActivity.class);
                         intent.putExtra("tipo_status", "Bloqueio");
                         intent.putExtra("id_chamado", idChamado);
@@ -157,6 +159,7 @@ public class ChamadosFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         ChamadosVO chamadosVO = dataSet.get(posicao2);
+                        chamadosVO.setFinalizacao_Data(new Date());
                         int idChamado = chamadosVO.getID();
                         Intent intent = new Intent(getActivity(), JustificarActivity.class);
                         intent.putExtra("tipo_status", "Cancelamento");
@@ -199,7 +202,5 @@ public class ChamadosFragment extends Fragment {
         listView.setAdapter(adapter);
         listView.setLongClickable(true);
         habilitarFundo();
-
     }
-
 }
